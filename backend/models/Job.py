@@ -1,7 +1,7 @@
 from datetime import datetime as dt
 from typing import Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from backend.utils.enums import JobType
 
@@ -10,21 +10,60 @@ SalaryUnit = Literal["hourly", "annual"]
 
 
 class Job(BaseModel):
-    application_url: str                        # Job board URL for the job
-    title: str                                  # Job title
-    company: str                                # Company where the job is
-    company_url: str | None = None              # Company's URL
-    description: str | None = None              # Job description
-    location: str | None = None                 # Job location
-    job_type: JobType | None = None             # Type of job (e.g. full-time, part-time, freelance, internship, unpaid)
-    salary_range: list[float] | None = None     # Salary numbers; interpret using salary_unit
-    salary_unit: SalaryUnit | None = None       # "hourly" or "annual" (from listing); use config SALARY_DISPLAY_MODE to show
-    currency: str = "CAD"                       # Salary currency
-    date_posted: dt | None = None               # Date the job was posted on the job board
-    application_deadline: dt | None = None      # Deadline to apply for the job
-    deadline_passed: bool = False               # If the deadline to apply for the job has passed
-    industries: list[str] | None = None         # Industries the job is a part of
-    source: str | None = None                   # Which job site the job came from
-    date_applied: dt | None = None              # Date user applied to the job
-    applied_resume: str = ""                    # Path to resume used to apply to job in DB
-    applied_cv: str = ""                        # Path to CV used to apply to job in DB
+    """A single job listing from an external job board."""
+
+    id: int | None = Field(default=None, description="Database ID for this job.")
+
+    application_url: str = Field(
+        ...,
+        description="Original job posting URL on the source job board.",
+    )
+    title: str = Field(..., description="Job title as shown on the listing.")
+    company: str = Field(..., description="Company/organization name.")
+    company_url: str | None = Field(
+        default=None,
+        description="Company/organization website URL (if available on the listing).",
+    )
+    description: str | None = Field(
+        default=None,
+        description="Full job description text (best-effort extraction).",
+    )
+    location: str | None = Field(
+        default=None,
+        description="Job location string from the listing (e.g. city/region/remote).",
+    )
+    job_type: JobType | None = Field(
+        default=None,
+        description="Type of job (full-time, part-time, freelance, internship, unpaid).",
+    )
+
+    salary_range: list[float] | None = Field(
+        default=None,
+        description="One or two salary numbers parsed from the listing (e.g. [50000, 60000]).",
+    )
+    salary_unit: SalaryUnit | None = Field(
+        default=None,
+        description='Unit for salary_range: "hourly" or "annual" (inferred from salary text).',
+    )
+    currency: str = Field(
+        default="CAD",
+        description='Currency code for salary (e.g. "USD", "CAD"). Inferred from location when possible.',
+    )
+
+    date_posted: dt | None = Field(
+        default=None,
+        description="Date the job was posted on the job board (if available).",
+    )
+    application_deadline: dt | None = Field(
+        default=None,
+        description="Deadline to apply (if the source listing provides it).",
+    )
+
+    industries: list[str] | None = Field(
+        default=None,
+        description="Industries/tags associated with the role (source-dependent).",
+    )
+    source: str | None = Field(
+        default=None,
+        description="Job board source identifier (e.g. 'journalismjobs.com').",
+    )

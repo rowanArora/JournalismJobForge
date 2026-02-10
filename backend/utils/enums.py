@@ -20,3 +20,12 @@ class UserTypes(Enum):
     BASIC = "Basic"
     ADMIN = "Admin"
     SUPER_ADMIN = "SuperAdmin"
+
+
+class JobStatus(Enum):
+    NOT_APPLIED = "NA"
+    APPLIED = "Applied"
+    REJECTED = "Rejected"
+    INTERVIEW = "Interview"
+    OFFER = "Job Offered"
+    ACCEPTED = "Accepted"
