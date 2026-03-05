@@ -17,6 +17,14 @@ class Application(BaseModel):
         default=None,
         description="Job ID (foreign key to jobs).",
     )
+    resume_id: int | None = Field(
+        default=None,
+        description="Resume ID used for this application (optional).",
+    )
+    cover_letter_id: int | None = Field(
+        default=None,
+        description="Cover letter ID used for this application (optional).",
+    )
 
     date_applied: dt | None = Field(
         default=None,
@@ -25,15 +33,6 @@ class Application(BaseModel):
     status: JobStatus = Field(
         default=JobStatus.NOT_APPLIED,
         description="Application status (applied/interview/rejected/offer/etc.).",
-    )
-
-    resume_id: int | None = Field(
-        default=None,
-        description="Resume ID used for this application (optional).",
-    )
-    cover_letter_id: int | None = Field(
-        default=None,
-        description="Cover letter ID used for this application (optional).",
     )
 
     notes: str | None = Field(

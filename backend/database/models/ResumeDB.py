@@ -1,17 +1,24 @@
-from datetime import datetime as dt
-from pydantic import BaseModel, Field
+from datetime import datetime as dt, timezone
+from typing import Optional
+
+from sqlalchemy import Column
+from sqlalchemy.dialects.postgresql import JSONB
+from sqlmodel import Field, SQLModel
 
 
-class Resume(BaseModel):
-    """A user resume (file metadata plus optional parsed content)."""
+class ResumeDB(SQLModel, table=True):
+    """Database table for resumes."""
 
-    id: int | None = Field(default=None, description="Database ID for this resume.")
+    # Primary key
+    id: Optional[int] = Field(default=None, primary_key=True, description="Database ID for this resume.")
 
-    user_id: int | None = Field(
-        default=None,
+    # Foreign keys
+    user_id: int = Field(
+        foreign_key="userdb.id",
         description="Owner user ID (foreign key to users).",
     )
 
+    # Storage info
     file_path: str | None = Field(
         default=None,
         description="Local path or storage URL to the resume file.",
@@ -21,30 +28,37 @@ class Resume(BaseModel):
         description="Friendly label for the resume (e.g. 'Reporting Resume v2').",
     )
 
+    # User work info
     raw_text: str | None = Field(
         default=None,
         description="Extracted text from the resume file (for search/AI).",
     )
     skills: list[str] | None = Field(
         default=None,
+        sa_column=Column(JSONB, nullable=True),
         description="Parsed skills/keywords extracted from the resume (optional).",
     )
     experience: list[str] | None = Field(
         default=None,
+        sa_column=Column(JSONB, nullable=True),
         description="Parsed experience bullets or roles extracted from the resume (optional).",
     )
     education: list[str] | None = Field(
         default=None,
+        sa_column=Column(JSONB, nullable=True),
         description="Parsed education entries extracted from the resume (optional).",
     )
     personal_projects: list[str] | None = Field(
         default=None,
+        sa_column=Column(JSONB, nullable=True),
         description="Parsed personal projects extracted from the resume (optional).",
     )
     portfolio_urls: list[str] | None = Field(
         default=None,
+        sa_column=Column(JSONB, nullable=True),
         description="Link to portfolio/website/social media (optional).",
     )
 
-    created_at: dt | None = Field(default=None, description="When this resume was created.")
-    updated_at: dt | None = Field(default=None, description="When this resume was last updated.")
+    # Dates
+    created_at: dt = Field(default_factory=lambda: dt.now(timezone.utc), description="When this resume was created.")
+    updated_at: dt = Field(default_factory=lambda: dt.now(timezone.utc), description="When this resume was last updated.")

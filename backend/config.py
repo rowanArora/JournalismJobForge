@@ -1,4 +1,5 @@
-MODES = ["local", "debug", "production"]
+MODES = ["debug", "production"]
+MODE = MODES[0]
 
 # Default currency when location-based inference fails (e.g. empty or unknown).
 DEFAULT_CURRENCY = "USD"

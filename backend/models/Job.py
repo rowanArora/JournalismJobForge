@@ -1,12 +1,8 @@
 from datetime import datetime as dt
-from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from backend.utils.enums import JobType
-
-# Unit for salary_range: "hourly" (e.g. $18/hr) or "annual" (e.g. $70,000/year).
-SalaryUnit = Literal["hourly", "annual"]
+from backend.utils.enums import JobType, SalaryUnit
 
 
 class Job(BaseModel):
@@ -46,8 +42,17 @@ class Job(BaseModel):
         description='Unit for salary_range: "hourly" or "annual" (inferred from salary text).',
     )
     currency: str = Field(
-        default="CAD",
+        default="USD",
         description='Currency code for salary (e.g. "USD", "CAD"). Inferred from location when possible.',
+    )
+
+    industries: list[str] | None = Field(
+        default=None,
+        description="Industries/tags associated with the role (source-dependent).",
+    )
+    source: str | None = Field(
+        default=None,
+        description="Job board source identifier (e.g. 'journalismjobs.com').",
     )
 
     date_posted: dt | None = Field(
@@ -58,12 +63,7 @@ class Job(BaseModel):
         default=None,
         description="Deadline to apply (if the source listing provides it).",
     )
-
-    industries: list[str] | None = Field(
+    created_at: dt | None = Field(
         default=None,
-        description="Industries/tags associated with the role (source-dependent).",
-    )
-    source: str | None = Field(
-        default=None,
-        description="Job board source identifier (e.g. 'journalismjobs.com').",
+        description="Job posting created at.",
     )

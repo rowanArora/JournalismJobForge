@@ -9,6 +9,12 @@ class JobType(Enum):
     UNPAID = "unpaid/volunteer"
 
 
+class SalaryUnit(Enum):
+    """Unit for salary: hourly (e.g. $18/hr) or annual (e.g. $70,000/year)."""
+    HOURLY = "hourly"
+    ANNUAL = "annual"
+
+
 class Currency(Enum):
     USD = "USD"
     CAD = "CAD"

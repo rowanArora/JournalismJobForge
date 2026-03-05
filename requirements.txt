@@ -1,7 +1,20 @@
-fastapi
-uvicorn[standard]
-tqdm
-requests
-beautifulsoup4
-pre-commit
-ruff
+# App & API
+fastapi~=0.115.0
+uvicorn[standard]~=0.32.0
+
+# Validation & utils
+email-validator~=2.2.0
+tqdm~=4.67.0
+requests~=2.32.0
+python-dotenv~=1.0.0
+beautifulsoup4~=4.12.0
+selenium~=4.25.0
+
+# Dev / tooling
+pre-commit~=4.0.0
+ruff~=0.8.0
+
+# Database
+sqlmodel~=0.0.16
+sqlalchemy~=2.0.0
+psycopg2-binary~=2.9.0
